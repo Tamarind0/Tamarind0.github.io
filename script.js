@@ -5,7 +5,7 @@ const message = document.getElementById("message");
 let noAttempts = 0;
 let yesClicks = 0;
 let yesScale = 1;
-
+let moveStep = 0;
 const messages = [
   "Correct. I like where this is going.",
   "You seem very confident in this decision.",
@@ -13,41 +13,28 @@ const messages = [
 ];
 
 function moveNoButton() {
-const maxDistance = 150 + yesScale * 20;
+  const moveDistance = 120;
   const padding = 20;
 
-  const yesRect = yesBtn.getBoundingClientRect();
-  const noWidth = noBtn.offsetWidth;
-  const noHeight = noBtn.offsetHeight;
+  let currentX = noBtn.offsetLeft;
+  let currentY = noBtn.offsetTop;
 
-  const yesCenterX = yesRect.left + yesRect.width / 2;
-  const yesCenterY = yesRect.top + yesRect.height / 2;
+  if (moveStep === 0) {
+    currentY -= moveDistance; // move UP
+  } else if (moveStep === 1) {
+    currentX -= moveDistance; // move LEFT
+  } else if (moveStep === 2) {
+    currentX += moveDistance * 2; // move RIGHT (extra dramatic)
+  }
 
-  let randomX, randomY, overlap;
+  moveStep = (moveStep + 1) % 3;
 
-  do {
-    const angle = Math.random() * Math.PI * 2;
-    const distance = Math.random() * maxDistance;
+  // Clamp inside screen
+  currentX = Math.max(padding, Math.min(window.innerWidth - noBtn.offsetWidth - padding, currentX));
+  currentY = Math.max(padding, Math.min(window.innerHeight - noBtn.offsetHeight - padding, currentY));
 
-    randomX = yesCenterX + Math.cos(angle) * distance - noWidth / 2;
-    randomY = yesCenterY + Math.sin(angle) * distance - noHeight / 2;
-
-    overlap =
-      randomX < yesRect.right &&
-      randomX + noWidth > yesRect.left &&
-      randomY < yesRect.bottom &&
-      randomY + noHeight > yesRect.top;
-
-  } while (
-    overlap ||
-    randomX < padding ||
-    randomY < padding ||
-    randomX + noWidth > window.innerWidth - padding ||
-    randomY + noHeight > window.innerHeight - padding
-  );
-
-  noBtn.style.left = `${randomX}px`;
-  noBtn.style.top = `${randomY}px`;
+  noBtn.style.left = `${currentX}px`;
+  noBtn.style.top = `${currentY}px`;
 }
 
 function growYesButton() {
