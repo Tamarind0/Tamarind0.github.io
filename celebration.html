@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>She Said Yes!</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: Arial;
+    }
+
+    #heart {
+      font-size: 50px;
+      transition: transform 2s ease;
+    }
+
+    #finalText {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="heart">❤️</div>
+  <div id="finalText">
+    <h1>She said YES! 💍💖</h1>
+    <p>Dinner at 7PM</p>
+    <p>Friday, Feb 14</p>
+    <p>Your Favorite Restaurant</p>
+  </div>
+
+  <script>
+    const heart = document.getElementById("heart");
+    const finalText = document.getElementById("finalText");
+
+    setTimeout(() => {
+      heart.style.transform = "scale(20)";
+    }, 500);
+
+    setTimeout(() => {
+      heart.textContent = "💔";
+      heart.style.transform = "scale(1)";
+    }, 2500);
+
+    setTimeout(() => {
+      heart.style.display = "none";
+      finalText.style.display = "block";
+    }, 3500);
+  </script>
+
+</body>
+</html>
