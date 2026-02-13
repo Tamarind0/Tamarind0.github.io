@@ -7,29 +7,32 @@ let yesClicks = 0;
 let yesScale = 1;
 
 const messages = [
-  "You clicked YES. Obviously correct choice.",
-  "Keep going. You're doing amazing sweetie.",
-  "One more click. Destiny awaits."
+  "Correct. I like where this is going.",
+  "You seem very confident in this decision.",
+  "This is legally binding now."
 ];
 
 function moveNoButton() {
+  const padding = 20; // keeps it away from edges
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
 
+  const noWidth = noBtn.offsetWidth;
+  const noHeight = noBtn.offsetHeight;
   const yesRect = yesBtn.getBoundingClientRect();
 
   let randomX, randomY;
   let overlap;
 
   do {
-    randomX = Math.random() * (screenWidth - 150);
-    randomY = Math.random() * (screenHeight - 60);
+    randomX = Math.random() * (screenWidth - noWidth - padding * 2) + padding;
+    randomY = Math.random() * (screenHeight - noHeight - padding * 2) + padding;
 
     overlap =
       randomX < yesRect.right &&
-      randomX + 100 > yesRect.left &&
+      randomX + noWidth > yesRect.left &&
       randomY < yesRect.bottom &&
-      randomY + 50 > yesRect.top;
+      randomY + noHeight > yesRect.top;
 
   } while (overlap);
 
@@ -38,7 +41,7 @@ function moveNoButton() {
 }
 
 function growYesButton() {
-  yesScale += 0.5;
+  yesScale *= 1.6; // exponential growth instead of gentle scaling
   yesBtn.style.transform = `scale(${yesScale})`;
 }
 
@@ -48,7 +51,8 @@ noBtn.addEventListener("mouseover", () => {
   moveNoButton();
 
   if (noAttempts >= 3) {
-    yesBtn.style.transform = "scale(6)";
+  yesScale = 10;
+  yesBtn.style.transform = `scale(${yesScale})`;
   }
 });
 

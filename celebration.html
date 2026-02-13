@@ -32,12 +32,15 @@
 <body>
 
   <div id="heart">❤️</div>
-  <div id="finalText">
-    <h1>She said YES! 💍💖</h1>
-    <p>Dinner at 7PM</p>
-    <p>Friday, Feb 14</p>
-    <p>Your Favorite Restaurant</p>
-  </div>
+<div id="finalText">
+  <h1>You have officially agreed to be my Valentine 💖</h1>
+  <p>Which means...</p>
+  <h2>✨ Romantic Date Incoming ✨</h2>
+  <p>🗓 Friday, February 14th</p>
+  <p>⏰ 7:00 PM</p>
+  <p>📍 Your Favorite Restaurant</p>
+  <p style="margin-top:20px;">Prepare for charm. And snacks.</p>
+</div>
 
   <script>
     const heart = document.getElementById("heart");
@@ -48,14 +51,9 @@
     }, 500);
 
     setTimeout(() => {
-      heart.textContent = "💔";
-      heart.style.transform = "scale(1)";
-    }, 2500);
-
-    setTimeout(() => {
       heart.style.display = "none";
       finalText.style.display = "block";
-    }, 3500);
+    }, 2500);
   </script>
 
 </body>
