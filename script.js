@@ -13,20 +13,24 @@ const messages = [
 ];
 
 function moveNoButton() {
-  const padding = 20; // keeps it away from edges
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
+const maxDistance = 150 + yesScale * 20;
+  const padding = 20;
 
+  const yesRect = yesBtn.getBoundingClientRect();
   const noWidth = noBtn.offsetWidth;
   const noHeight = noBtn.offsetHeight;
-  const yesRect = yesBtn.getBoundingClientRect();
 
-  let randomX, randomY;
-  let overlap;
+  const yesCenterX = yesRect.left + yesRect.width / 2;
+  const yesCenterY = yesRect.top + yesRect.height / 2;
+
+  let randomX, randomY, overlap;
 
   do {
-    randomX = Math.random() * (screenWidth - noWidth - padding * 2) + padding;
-    randomY = Math.random() * (screenHeight - noHeight - padding * 2) + padding;
+    const angle = Math.random() * Math.PI * 2;
+    const distance = Math.random() * maxDistance;
+
+    randomX = yesCenterX + Math.cos(angle) * distance - noWidth / 2;
+    randomY = yesCenterY + Math.sin(angle) * distance - noHeight / 2;
 
     overlap =
       randomX < yesRect.right &&
@@ -34,7 +38,13 @@ function moveNoButton() {
       randomY < yesRect.bottom &&
       randomY + noHeight > yesRect.top;
 
-  } while (overlap);
+  } while (
+    overlap ||
+    randomX < padding ||
+    randomY < padding ||
+    randomX + noWidth > window.innerWidth - padding ||
+    randomY + noHeight > window.innerHeight - padding
+  );
 
   noBtn.style.left = `${randomX}px`;
   noBtn.style.top = `${randomY}px`;
