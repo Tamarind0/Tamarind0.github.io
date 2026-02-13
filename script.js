@@ -6,11 +6,12 @@ let noAttempts = 0;
 let yesClicks = 0;
 let yesScale = 1;
 let noScale = 1;
+let noWasClickedFirst = false;
 
 const yesMessages = [
-  "That’s the correct decision. Obviously.",
-  "You continue to impress me.",
-  "One more click and destiny is sealed."
+  "Interesting choice... I see what you're doing.",
+  "Confidence looks good on you.",
+  "Okay okay this is getting official."
 ];
 
 const noTexts = [
@@ -18,9 +19,8 @@ const noTexts = [
   "Wait...",
   "Are you sure?",
   "That seems incorrect",
-  "Let’s rethink this",
-  "This button is malfunctioning",
-  "This is getting smaller for a reason..."
+  "This button is shrinking for a reason...",
+  "You’re making this difficult."
 ];
 
 let noTextIndex = 0;
@@ -30,23 +30,25 @@ let noTextIndex = 0;
 /* ============================= */
 
 function updateNoButton() {
+  if (noAttempts === 0 && yesClicks === 0) {
+    noWasClickedFirst = true;
+  }
+
   noAttempts++;
 
-  // Change text dramatically
   if (noTextIndex < noTexts.length - 1) {
     noTextIndex++;
     noBtn.innerText = noTexts[noTextIndex];
   }
 
-  // Shrink the NO button
+  // Shrink NO
   noScale *= 0.7;
   noBtn.style.transform = `scale(${noScale})`;
 
-  // Grow YES aggressively
+  // Grow YES
   yesScale *= 1.5;
   yesBtn.style.transform = `scale(${yesScale})`;
 
-  // If NO gets too tiny, remove it entirely
   if (noScale < 0.15) {
     noBtn.style.display = "none";
   }
@@ -63,12 +65,16 @@ noBtn.addEventListener("click", function (e) {
 /* ============================= */
 
 yesBtn.addEventListener("click", function () {
-  if (yesClicks < yesMessages.length) {
-    message.textContent = yesMessages[yesClicks];
+
+  // If she tried NO first → only 1 click required
+  const requiredClicks = noWasClickedFirst ? 1 : 3;
+
+  if (yesClicks < requiredClicks) {
+    message.textContent = yesMessages[Math.min(yesClicks, yesMessages.length - 1)];
     yesClicks++;
   }
 
-  if (yesClicks === 3) {
+  if (yesClicks === requiredClicks) {
     setTimeout(() => {
       window.location.href = "celebration.html";
     }, 1000);

@@ -2,19 +2,20 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>She Said Yes!</title>
+  <title>Celebration</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      background: black;
-      color: white;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      overflow: hidden;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
     }
 
     #heart {
@@ -24,36 +25,75 @@
 
     #finalText {
       display: none;
-      text-align: center;
       margin-top: 20px;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .falling-heart {
+      position: absolute;
+      top: -50px;
+      font-size: 24px;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
 
   <div id="heart">❤️</div>
-<div id="finalText">
-  <h1>You have officially agreed to be my Valentine 💖</h1>
-  <p>Which means...</p>
-  <h2>✨ Romantic Date Incoming ✨</h2>
-  <p>🗓 Friday, February 14th</p>
-  <p>⏰ 7:00 PM</p>
-  <p>📍 Your Favorite Restaurant</p>
-  <p style="margin-top:20px;">Prepare for charm. And snacks.</p>
-</div>
+
+  <div id="finalText">
+    <h1>You are officially my Valentine 💖</h1>
+    <h2>✨ Operation Romantic Evening Activated ✨</h2>
+    <p>🗓 Friday, February 14th</p>
+    <p>⏰ 7:00 PM</p>
+    <p>📍 Your Favorite Restaurant</p>
+    <p>Dress cute. I will try to match.</p>
+  </div>
 
   <script>
     const heart = document.getElementById("heart");
     const finalText = document.getElementById("finalText");
 
+    // Grow heart
     setTimeout(() => {
       heart.style.transform = "scale(20)";
     }, 500);
 
+    // Reveal text
     setTimeout(() => {
       heart.style.display = "none";
       finalText.style.display = "block";
+      startFallingHearts();
     }, 2500);
+
+    function startFallingHearts() {
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.classList.add("falling-heart");
+        heart.innerText = "💖";
+
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 5000);
+      }, 300);
+    }
   </script>
 
 </body>
