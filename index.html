@@ -1,22 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Be My Valentine?</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine?</title>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+  }
+
+  .screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+  }
+
+  .active {
+    display: flex;
+  }
+
+  h1 {
+    font-size: clamp(24px, 6vw, 36px);
+  }
+
+  button {
+    padding: 15px 25px;
+    font-size: clamp(16px, 4vw, 20px);
+    border: none;
+    border-radius: 15px;
+    margin: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #yesBtn {
+    background: #4CAF50;
+    color: white;
+  }
+
+  #noBtn {
+    background: #f44336;
+    color: white;
+  }
+
+  #heart {
+    font-size: 50px;
+    transition: transform 0.6s cubic-bezier(.68,-0.55,.27,1.55);
+  }
+
+  #finalText {
+    display: none;
+    animation: fadeIn 1.5s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .falling-heart {
+    position: absolute;
+    top: -40px;
+    font-size: 20px;
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(110vh);
+      opacity: 0;
+    }
+  }
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>Do you want to be my Valentine? 💖</h1>
 
-    <div class="buttons">
-      <button id="yesBtn">YES 💚</button>
-      <button id="noBtn">NO ❤️</button>
-    </div>
-
-    <p id="message"></p>
+<!-- SCREEN 1 -->
+<div id="mainScreen" class="screen active">
+  <h1>Do you want to be my Valentine? 💖</h1>
+  <div>
+    <button id="yesBtn">YES 💚</button>
+    <button id="noBtn">No</button>
   </div>
+  <p id="message"></p>
+</div>
 
-  <script src="script.js"></script>
+<!-- SCREEN 2 -->
+<div id="celebrationScreen" class="screen">
+  <div id="heart">❤️</div>
+  <div id="finalText">
+    <h1>You are officially my Valentine 💖</h1>
+    <h2>✨ Romantic Evening Activated ✨</h2>
+    <p>🗓 Friday, February 14th</p>
+    <p>⏰ 7:00 PM</p>
+    <p>📍 Your Favorite Restaurant</p>
+    <p>I promise snacks and charm.</p>
+  </div>
+</div>
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const message = document.getElementById("message");
+const mainScreen = document.getElementById("mainScreen");
+const celebrationScreen = document.getElementById("celebrationScreen");
+const heart = document.getElementById("heart");
+const finalText = document.getElementById("finalText");
+
+let noAttempts = 0;
+let yesClicks = 0;
+let yesScale = 1;
+let noScale = 1;
+let noWasClickedFirst = false;
+
+const yesMessages = [
+  "That seems like the correct choice.",
+  "Confidence looks good on you.",
+  "One more click seals your fate."
+];
+
+const noTexts = [
+  "No",
+  "Wait...",
+  "Are you sure?",
+  "This button is shrinking...",
+  "I don't think that's right."
+];
+
+let noTextIndex = 0;
+
+/* NO BUTTON */
+function updateNoButton() {
+  if (noAttempts === 0 && yesClicks === 0) {
+    noWasClickedFirst = true;
+  }
+
+  noAttempts++;
+
+  if (noTextIndex < noTexts.length - 1) {
+    noTextIndex++;
+    noBtn.innerText = noTexts[noTextIndex];
+  }
+
+  noScale *= 0.7;
+  noBtn.style.transform = `scale(${noScale})`;
+
+  yesScale *= 1.5;
+  yesBtn.style.transform = `scale(${yesScale})`;
+
+  if (noScale < 0.2) {
+    noBtn.style.display = "none";
+  }
+}
+
+noBtn.addEventListener("click", updateNoButton);
+noBtn.addEventListener("mouseover", updateNoButton);
+
+/* YES BUTTON */
+yesBtn.addEventListener("click", function () {
+  const requiredClicks = noWasClickedFirst ? 1 : 3;
+
+  if (yesClicks < requiredClicks) {
+    message.textContent = yesMessages[Math.min(yesClicks, yesMessages.length - 1)];
+    yesClicks++;
+  }
+
+  if (yesClicks === requiredClicks) {
+    startCelebration();
+  }
+});
+
+function startCelebration() {
+  mainScreen.classList.remove("active");
+  celebrationScreen.classList.add("active");
+
+  setTimeout(() => {
+    heart.style.transform = "scale(18)";
+  }, 500);
+
+  setTimeout(() => {
+    heart.style.display = "none";
+    finalText.style.display = "block";
+    startFallingHearts();
+  }, 2500);
+}
+
+function startFallingHearts() {
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.classList.add("falling-heart");
+    h.innerText = "💖";
+
+    h.style.left = Math.random() * window.innerWidth + "px";
+    h.style.animationDuration = (Math.random() * 3 + 2) + "s";
+
+    document.body.appendChild(h);
+
+    setTimeout(() => h.remove(), 5000);
+  }, 300);
+}
+</script>
+
 </body>
 </html>
